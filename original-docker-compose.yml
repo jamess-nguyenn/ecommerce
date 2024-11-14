@@ -1,0 +1,62 @@
+services:
+    golang:
+        image: golang:1.23
+        container_name: golang-app
+        volumes:
+            - .:/var/www/go/ecommerce
+        working_dir: /var/www/go/ecommerce
+        #command: go run main.go
+        command: tail -f /dev/null
+        depends_on:
+            - mysql
+            - mongodb
+            - redis
+        networks:
+            - backend
+
+    mysql:
+        image: mysql:8.0
+        container_name: mysql-db
+        volumes:
+            - mysql-data:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        networks:
+            - backend
+
+    mongodb:
+        image: mongo:latest
+        container_name: mongo-db
+        volumes:
+            - mongo-data:/data/db
+        ports:
+            - "27017:27017"
+        networks:
+            - backend
+
+    nginx:
+        image: nginx:latest
+        container_name: nginx-server
+        volumes:
+            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - "80:80"
+        depends_on:
+            - golang
+        networks:
+            - backend
+
+    redis:
+        image: redis:latest
+        container_name: redis-cache
+        ports:
+            - "6379:6379"
+        networks:
+            - backend
+
+networks:
+    backend:
+
+volumes:
+    mysql-data:
+    mongo-data:
