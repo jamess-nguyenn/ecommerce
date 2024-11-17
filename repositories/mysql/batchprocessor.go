@@ -26,9 +26,5 @@ func BatchUpdate[model any](wg *sync.WaitGroup, repo BatchUpdater[model], record
 }
 
 func CalculateEndingIndex(startingIndex, batchSize, recordNumber int) int {
-	endingIndex := startingIndex + batchSize
-	if endingIndex > recordNumber {
-		endingIndex = recordNumber
-	}
-	return endingIndex
+	return min(startingIndex+batchSize, recordNumber)
 }

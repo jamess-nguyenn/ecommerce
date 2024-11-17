@@ -28,15 +28,15 @@ type Repository[model any] interface {
 	BatchUpdater[model]
 }
 
-type BaseRepository[model any] struct {
+type baseRepository[model any] struct {
 	db *connection.MysqlDatabase
 }
 
-func NewBaseRepository[model any](db *connection.MysqlDatabase) *BaseRepository[model] {
-	return &BaseRepository[model]{db: db}
+func newBaseRepository[model any](db *connection.MysqlDatabase) *baseRepository[model] {
+	return &baseRepository[model]{db: db}
 }
 
-func (repository *BaseRepository[model]) Create(record *model) (*model, error) {
+func (repository *baseRepository[model]) Create(record *model) (*model, error) {
 	if err := repository.db.Master.Create(record).Error; err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (repository *BaseRepository[model]) Create(record *model) (*model, error) {
 	return record, nil
 }
 
-func (repository *BaseRepository[model]) CreateMany(records []*model) error {
+func (repository *baseRepository[model]) CreateMany(records []*model) error {
 	return repository.db.Master.Transaction(func(tran *gorm.DB) error {
 		if err := tran.Create(records).Error; err != nil {
 			return err

@@ -13,7 +13,7 @@ const LogGroupHandler = "http_handlers"
 func LogRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		helpers.ResetTrackingIDs(r.Header)
-		helpers.LogInfo("Request in middleware", getLogHandler(r), getAdditionalData(r))
+		helpers.LogInfo("Incoming HTTP request", getLogHandler(r), getAdditionalData(r))
 
 		next.ServeHTTP(w, r)
 	})
