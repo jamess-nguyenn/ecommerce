@@ -6,22 +6,22 @@ import (
 	"os"
 )
 
-type CacheConfig struct {
+type cacheConfig struct {
 	Prefix string `json:"prefix"`
 }
 
-type JWTConfig struct {
+type jWTConfig struct {
 	ExpirationHours int `json:"expiration_hours"`
 }
 
-type LoggingConfig struct {
+type loggingConfig struct {
 	OutputFile string `json:"output_file"`
 }
 
 var (
-	Cache   *CacheConfig
-	JWT     *JWTConfig
-	Logging *LoggingConfig
+	Cache   *cacheConfig
+	JWT     *jWTConfig
+	Logging *loggingConfig
 )
 
 func loadConfig(filename string, config any) error {
@@ -40,9 +40,9 @@ func loadConfig(filename string, config any) error {
 }
 
 func LoadConfigs() {
-	Cache = &CacheConfig{}
-	JWT = &JWTConfig{}
-	Logging = &LoggingConfig{}
+	Cache = &cacheConfig{}
+	JWT = &jWTConfig{}
+	Logging = &loggingConfig{}
 
 	filenameConfig := map[string]any{
 		"cache":   Cache,

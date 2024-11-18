@@ -7,20 +7,20 @@ import (
 	"time"
 )
 
-type Cache struct {
+type cache struct {
 	rc     *connection.RedisClient
 	prefix string
 }
 
 var (
-	instance *Cache
+	instance *cache
 	once     sync.Once
 )
 
-func NewCache() *Cache {
+func NewCache() *cache {
 	once.Do(func() {
 		rc, _ := connection.ConnectRedis()
-		instance = &Cache{
+		instance = &cache{
 			rc:     rc,
 			prefix: config.Cache.Prefix,
 		}
@@ -29,18 +29,18 @@ func NewCache() *Cache {
 	return instance
 }
 
-func (c *Cache) addPrefix(key string) string {
+func (c *cache) addPrefix(key string) string {
 	return c.prefix + key
 }
 
-func (c *Cache) Set(key string, value any, expiration time.Duration) error {
+func (c *cache) Set(key string, value any, expiration time.Duration) error {
 	return c.rc.Client.Set(c.addPrefix(key), value, expiration).Err()
 }
 
-func (c *Cache) Get(key string) (string, error) {
+func (c *cache) Get(key string) (string, error) {
 	return c.rc.Client.Get(c.addPrefix(key)).Result()
 }
 
-func (c *Cache) Forget(key string) error {
+func (c *cache) Forget(key string) error {
 	return c.rc.Client.Del(c.addPrefix(key)).Err()
 }

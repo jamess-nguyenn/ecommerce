@@ -5,12 +5,12 @@ import (
 	"ecommerce/models/mongo"
 )
 
-type StorefrontRepository struct {
-	BaseRepository[mongo.Storefront]
+type storefrontRepository struct {
+	baseRepository[mongo.Storefront]
 }
 
-func NewStorefrontRepository(db *connection.MongoDatabase) *StorefrontRepository {
-	return &StorefrontRepository{
-		BaseRepository: *NewBaseRepository[mongo.Storefront](db, mongo.Storefront{}.CollectionName()),
+func NewStorefrontRepository(db *connection.MongoDatabase) *storefrontRepository {
+	return &storefrontRepository{
+		baseRepository: *newBaseRepository[mongo.Storefront](db, mongo.Storefront{}.CollectionName()),
 	}
 }

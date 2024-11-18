@@ -15,28 +15,40 @@ const (
 	TraceIDLength   = 32
 )
 
+// It is not a best practice to use a global variable here
+// Will improve this package and related ones in the near future
 var entry *logrus.Entry
 
 func init() {
-	log := logrus.New()
+	logger := logrus.New()
 
 	// Set log level and formatter
-	log.SetLevel(GetLogLevel())
-	log.SetFormatter(&logrus.JSONFormatter{
+	configureLogger(logger)
+
+	// Configure log output file
+	outputFile, _ := createLogFile(config.Logging.OutputFile)
+
+	logger.SetOutput(outputFile)
+
+	// Initialize entry with fields that should be in every log
+	entry = logger.WithFields(getOriginalFields())
+}
+
+func configureLogger(logger *logrus.Logger) {
+	logger.SetLevel(GetLogLevel(os.Getenv("LOG_LEVEL")))
+
+	logger.SetFormatter(&logrus.JSONFormatter{
 		TimestampFormat: time.DateTime,
 		FieldMap: logrus.FieldMap{
 			logrus.FieldKeyMsg:  "message",
 			logrus.FieldKeyTime: "datetime",
 		},
 	})
+}
 
-	// Configure log output file
-	logPath := fmt.Sprintf(config.Logging.OutputFile, GetDate())
-	file, _ := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	log.SetOutput(file)
-
-	// Initialize entry with fields that should be in every log
-	entry = log.WithFields(getOriginalFields())
+func createLogFile(filePathTemplate string) (*os.File, error) {
+	logPath := fmt.Sprintf(filePathTemplate, GetDate())
+	return os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 }
 
 func ResetTrackingIDs(h http.Header) {
@@ -66,9 +78,9 @@ func getTrackingIDs(h http.Header) logrus.Fields {
 	}
 }
 
-func GetLogLevel() logrus.Level {
-	if level, err := logrus.ParseLevel(os.Getenv("LOG_LEVEL")); err == nil {
-		return level
+func GetLogLevel(level string) logrus.Level {
+	if levelConstant, err := logrus.ParseLevel(level); err == nil {
+		return levelConstant
 	}
 
 	return logrus.InfoLevel
@@ -79,16 +91,7 @@ func Log(level string, message string, data ...map[string]any) {
 
 	contextEntry := entry.WithFields(getAdditionalFields(dataField, additionalData))
 
-	switch strings.ToLower(level) {
-	case "debug":
-		contextEntry.Debug(message)
-	case "warning":
-		contextEntry.Warning(message)
-	case "error":
-		contextEntry.Error(message)
-	default:
-		contextEntry.Info(message) // Default to Info if level is unrecognized
-	}
+	logMessage(contextEntry, GetLogLevel(level), message)
 }
 
 func parseLogData(data []map[string]any, additionalData map[string]any) (map[string]any, map[string]any) {
@@ -99,6 +102,19 @@ func parseLogData(data []map[string]any, additionalData map[string]any) (map[str
 		return data[0], data[1]
 	default:
 		return map[string]any{}, additionalData
+	}
+}
+
+func logMessage(contextEntry *logrus.Entry, level logrus.Level, message string) {
+	switch level {
+	case logrus.DebugLevel:
+		contextEntry.Debug(message)
+	case logrus.WarnLevel:
+		contextEntry.Warning(message)
+	case logrus.ErrorLevel:
+		contextEntry.Error(message)
+	default:
+		contextEntry.Info(message) // Default to Info if level is unrecognized
 	}
 }
 

@@ -5,12 +5,12 @@ import (
 	"ecommerce/models/mysql"
 )
 
-type ProductRepository struct {
-	BaseRepository[mysql.Product]
+type productRepository struct {
+	baseRepository[mysql.Product]
 }
 
-func NewProductRepository(db *connection.MysqlDatabase) *ProductRepository {
-	return &ProductRepository{
-		BaseRepository: *NewBaseRepository[mysql.Product](db),
+func NewProductRepository(db *connection.MysqlDatabase) *productRepository {
+	return &productRepository{
+		baseRepository: *newBaseRepository[mysql.Product](db),
 	}
 }

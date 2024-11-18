@@ -13,23 +13,23 @@ type Repository[model any] interface {
 	TransactionInsertMany(documents []any) error
 }
 
-type BaseRepository[model any] struct {
+type baseRepository[model any] struct {
 	db   *connection.MongoDatabase
 	name string
 }
 
-func NewBaseRepository[model any](db *connection.MongoDatabase, name string) *BaseRepository[model] {
-	return &BaseRepository[model]{
+func newBaseRepository[model any](db *connection.MongoDatabase, name string) *baseRepository[model] {
+	return &baseRepository[model]{
 		db:   db,
 		name: name,
 	}
 }
 
-func (repository *BaseRepository[model]) Name() string {
+func (repository *baseRepository[model]) Name() string {
 	return repository.name
 }
 
-func (repository *BaseRepository[model]) Insert(document *model) (*mongo.InsertOneResult, error) {
+func (repository *baseRepository[model]) Insert(document *model) (*mongo.InsertOneResult, error) {
 	result, err := repository.db.Database.Collection(repository.Name()).InsertOne(context.TODO(), document)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (repository *BaseRepository[model]) Insert(document *model) (*mongo.InsertO
 	return result, nil
 }
 
-func (repository *BaseRepository[model]) InsertMany(documents []any) error {
+func (repository *baseRepository[model]) InsertMany(documents []any) error {
 	_, err := repository.db.Database.Collection(repository.Name()).InsertMany(context.TODO(), documents)
 	if err != nil {
 		return err
@@ -47,7 +47,7 @@ func (repository *BaseRepository[model]) InsertMany(documents []any) error {
 	return nil
 }
 
-func (repository *BaseRepository[model]) TransactionInsertMany(documents []any) error {
+func (repository *baseRepository[model]) TransactionInsertMany(documents []any) error {
 	// start a session
 	session, err := repository.db.Client.StartSession()
 	if err != nil {
