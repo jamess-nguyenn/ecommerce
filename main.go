@@ -10,7 +10,7 @@ import (
 func main() {
 	router := routes.BuildApiRouter()
 
-	if err := http.ListenAndServe(":"+helpers.GetServerPort(), router); err != nil {
+	if err := http.ListenAndServe(helpers.GetServerAddress(), router); err != nil {
 		fmt.Println("Error starting server:", err)
 	}
 }

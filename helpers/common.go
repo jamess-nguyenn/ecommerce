@@ -30,12 +30,21 @@ func GetEnv() string {
 	return os.Getenv("APP_ENV")
 }
 
-//func GetServerURL() string {
-//	return os.Getenv("SERVER_URL")
-//}
+func GetServerHost() string {
+	return os.Getenv("SERVER_HOST")
+}
 
 func GetServerPort() string {
 	return os.Getenv("SERVER_PORT")
+}
+
+func GetServerAddress() string {
+	address := fmt.Sprintf("%s:%s",
+		GetServerHost(),
+		GetServerPort(),
+	)
+	
+	return address
 }
 
 func GetParams(r *http.Request) map[string]string {
