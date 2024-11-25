@@ -24,7 +24,6 @@ go.work.sum
 .env
 
 # structure note
-test/
-docker-compose.yml
+tests/
 note.txt
 structure.txt
