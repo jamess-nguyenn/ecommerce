@@ -1,0 +1,12 @@
+# env file
+.env.shared
+.env.zookeeper1
+.env.zookeeper2
+.env.zookeeper3
+
+# config file
+zookeeper1.cfg
+zookeeper2.cfg
+zookeeper3.cfg
+
+!.gitignore

@@ -1,0 +1,7 @@
+# env file
+.env.shared
+.env.kafka1
+.env.kafka2
+.env.kafka3
+
+!.gitignore

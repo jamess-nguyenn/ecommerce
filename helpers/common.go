@@ -14,12 +14,26 @@ import (
 
 func init() {
 	// load environment variables
-	if err := LoadEnv(); err != nil {
-		fmt.Printf("Error loading .env file: %v\n", err)
-		return
+	errEnv := LoadEnv()
+	// load configuration variables
+	errConfig := config.LoadConfigs()
+
+	if errEnv != nil || errConfig != nil {
+		fmt.Printf("Failed to load files including environment: \"%v\" and configuration: \"%v\"\n",
+			getErrorMessage(errEnv),
+			getErrorMessage(errConfig),
+		)
+
+		os.Exit(1)
+	}
+}
+
+func getErrorMessage(err error) string {
+	if err == nil {
+		return ""
 	}
 
-	config.LoadConfigs()
+	return err.Error()
 }
 
 func LoadEnv() error {
@@ -43,7 +57,7 @@ func GetServerAddress() string {
 		GetServerHost(),
 		GetServerPort(),
 	)
-	
+
 	return address
 }
 
