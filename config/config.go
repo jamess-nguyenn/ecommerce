@@ -39,7 +39,7 @@ func loadConfig(filename string, config any) error {
 	return nil
 }
 
-func LoadConfigs() {
+func LoadConfigs() error {
 	Cache = &cacheConfig{}
 	JWT = &jWTConfig{}
 	Logging = &loggingConfig{}
@@ -52,6 +52,10 @@ func LoadConfigs() {
 
 	for filename, config := range filenameConfig {
 		filenamePath := fmt.Sprintf("config/%s.json", filename)
-		_ = loadConfig(filenamePath, config)
+		if err := loadConfig(filenamePath, config); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }

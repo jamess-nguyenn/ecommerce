@@ -15,6 +15,7 @@ services:
             - mysql
             - mongodb
             - redis
+            - kafka1
         networks:
             - backend
 
@@ -22,9 +23,10 @@ services:
         image: mysql:8.0
         container_name: mysql-db
         env_file:
-            - ./docker/mysql/.env  # Load variables from the docker/mysql/.env file
+            - ./docker/mysql/.env
         volumes:
             - mysql-data:/var/lib/mysql
+            #- ./docker/container-data/mysql:/var/lib/mysql # switch the comment to the above line to use the host filesystem
         ports:
             - "3306:3306"
         networks:
@@ -35,6 +37,7 @@ services:
         container_name: mongo-db
         volumes:
             - mongo-data:/data/db
+            #- ./docker/container-data/mongodb:/data/db # switch the comment to the above line to use the host filesystem
         ports:
             - "27017:27017"
         networks:
@@ -61,9 +64,128 @@ services:
         networks:
             - backend
 
+    # ZooKeeper Nodes
+    zookeeper1:
+        image: confluentinc/cp-zookeeper:latest
+        container_name: zookeeper1
+        env_file:
+            - ./docker/zookeeper/.env.shared
+            - ./docker/zookeeper/.env.zookeeper1
+        volumes:
+            - ./docker/zookeeper/zookeeper1.cfg:/etc/zookeeper/conf/zoo.cfg
+            - zookeeper1-data:/var/lib/zookeeper/data
+            #- ./docker/container-data/zookeeper1:/var/lib/zookeeper/data # switch the comment to the above line to use the host filesystem
+            - ./docker/logs/zookeeper1:/var/lib/zookeeper/log
+        ports:
+            - "2181:2181"
+            - "2888:2888"
+            - "3888:3888"
+        networks:
+            - backend
+
+    zookeeper2:
+        image: confluentinc/cp-zookeeper:latest
+        container_name: zookeeper2
+        env_file:
+            - ./docker/zookeeper/.env.shared
+            - ./docker/zookeeper/.env.zookeeper2
+        volumes:
+            - ./docker/zookeeper/zookeeper2.cfg:/etc/zookeeper/conf/zoo.cfg
+            - zookeeper2-data:/var/lib/zookeeper/data
+            #- ./docker/container-data/zookeeper2:/var/lib/zookeeper/data # switch the comment to the above line to use the host filesystem
+            - ./docker/logs/zookeeper2:/var/lib/zookeeper/log
+        ports:
+            - "2182:2182"
+            - "2889:2888"
+            - "3889:3888"
+        networks:
+            - backend
+
+    zookeeper3:
+        image: confluentinc/cp-zookeeper:latest
+        container_name: zookeeper3
+        env_file:
+            - ./docker/zookeeper/.env.shared
+            - ./docker/zookeeper/.env.zookeeper3
+        volumes:
+            - ./docker/zookeeper/zookeeper3.cfg:/etc/zookeeper/conf/zoo.cfg
+            - zookeeper3-data:/var/lib/zookeeper/data
+            #- ./docker/container-data/zookeeper3:/var/lib/zookeeper/data # switch the comment to the above line to use the host filesystem
+            - ./docker/logs/zookeeper3:/var/lib/zookeeper/log
+        ports:
+            - "2183:2183"
+            - "2890:2888"
+            - "3890:3888"
+        networks:
+            - backend
+
+    # Kafka Brokers
+    kafka1:
+        image: confluentinc/cp-kafka:latest
+        container_name: kafka1
+        env_file:
+            - ./docker/kafka/.env.shared
+            - ./docker/kafka/.env.kafka1
+        volumes:
+            - kafka1-data:/var/lib/kafka
+            #- ./docker/container-data/kafka1:/var/lib/kafka # switch the comment to the above line to use the host filesystem
+            - ./docker/logs/kafka1:/var/log/kafka
+        ports:
+            - "9092:9092"
+        depends_on:
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        networks:
+            - backend
+
+    kafka2:
+        image: confluentinc/cp-kafka:latest
+        container_name: kafka2
+        env_file:
+            - ./docker/kafka/.env.shared
+            - ./docker/kafka/.env.kafka2
+        volumes:
+            - kafka2-data:/var/lib/kafka
+            #- ./docker/container-data/kafka2:/var/lib/kafka # switch the comment to the above line to use the host filesystem
+            - ./docker/logs/kafka2:/var/log/kafka
+        ports:
+            - "9093:9093"
+        depends_on:
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        networks:
+            - backend
+
+    kafka3:
+        image: confluentinc/cp-kafka:latest
+        container_name: kafka3
+        env_file:
+            - ./docker/kafka/.env.shared
+            - ./docker/kafka/.env.kafka3
+        volumes:
+            - kafka3-data:/var/lib/kafka
+            #- ./docker/container-data/kafka3:/var/lib/kafka # switch the comment to the above line to use the host filesystem
+            - ./docker/logs/kafka3:/var/log/kafka
+        ports:
+            - "9094:9094"
+        depends_on:
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        networks:
+            - backend
+
 networks:
     backend:
 
 volumes:
     mysql-data:
     mongo-data:
+    zookeeper1-data:
+    zookeeper2-data:
+    zookeeper3-data:
+    kafka1-data:
+    kafka2-data:
+    kafka3-data:

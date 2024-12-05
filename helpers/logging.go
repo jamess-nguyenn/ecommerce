@@ -113,6 +113,10 @@ func logMessage(contextEntry *logrus.Entry, level logrus.Level, message string) 
 		contextEntry.Warning(message)
 	case logrus.ErrorLevel:
 		contextEntry.Error(message)
+	case logrus.FatalLevel:
+		contextEntry.Fatal(message)
+	case logrus.PanicLevel:
+		contextEntry.Panic(message)
 	default:
 		contextEntry.Info(message) // Default to Info if level is unrecognized
 	}
@@ -131,6 +135,14 @@ func LogWarning(message string, data ...map[string]any) {
 }
 
 func LogError(message string, data ...map[string]any) {
+	Log(getLevelName(), message, data...)
+}
+
+func LogFatal(message string, data ...map[string]any) {
+	Log(getLevelName(), message, data...)
+}
+
+func LogPanic(message string, data ...map[string]any) {
 	Log(getLevelName(), message, data...)
 }
 
