@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	RequestIDLength = 20
-	TraceIDLength   = 32
+	requestIDLength = 20
+	traceIDLength   = 32
 )
 
 // It is not a best practice to use a global variable here
@@ -87,7 +87,7 @@ func GetLogLevel(level string) logrus.Level {
 }
 
 func Log(level string, message string, data ...map[string]any) {
-	dataField, additionalData := parseLogData(data, getAdditionalData())
+	dataField, additionalData := parseLogData(data, GetAdditionalData(FrameLevel4))
 
 	contextEntry := entry.WithFields(getAdditionalFields(dataField, additionalData))
 
@@ -147,7 +147,7 @@ func LogPanic(message string, data ...map[string]any) {
 }
 
 func getLevelName() string {
-	functionInfo, _ := GetTrace(2)
+	functionInfo, _ := GetTrace(FrameLevel2)
 
 	function := GetFunctionAfterDot(functionInfo)
 
@@ -155,11 +155,11 @@ func getLevelName() string {
 }
 
 func GenerateRequestID() string {
-	return GenerateString(RequestIDLength)
+	return GenerateString(requestIDLength)
 }
 
 func GenerateTraceID() string {
-	return GenerateString(TraceIDLength)
+	return GenerateString(traceIDLength)
 }
 
 func getAdditionalFields(data, additionalData map[string]any) logrus.Fields {
@@ -174,8 +174,8 @@ func getAdditionalFields(data, additionalData map[string]any) logrus.Fields {
 	return fields
 }
 
-func getAdditionalData() map[string]any {
-	functionInfo, filePath := GetTrace(4)
+func GetAdditionalData(skip int) map[string]any {
+	functionInfo, filePath := GetTrace(skip)
 
 	function := GetFunctionAfterDot(functionInfo)
 

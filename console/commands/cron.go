@@ -9,8 +9,9 @@ func InitializeCron() {
 	c := cron.New()
 
 	// list cron
-	c.AddFunc("* * * * *", exampleCommand)
-	c.AddFunc("*/2 * * * *", sampleCommand)
+	c.AddFunc("* * * * *", crawlCategoryCommand)
+	//c.AddFunc("* * * * *", exampleCommand)
+	//c.AddFunc("*/2 * * * *", sampleCommand)
 
 	c.Start()
 }

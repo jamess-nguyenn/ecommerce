@@ -38,10 +38,8 @@ func BuildRedisClientOptions() *redis.Options {
 	}
 }
 
-func openConnectionRedis() *redis.Client {
-	client := redis.NewClient(
-		BuildRedisClientOptions(),
-	)
+func openConnectionRedis(options *redis.Options) *redis.Client {
+	client := redis.NewClient(options)
 
 	return client
 }
@@ -64,7 +62,7 @@ func closeConnectionRedis(client *redis.Client) error {
 
 func ConnectRedis() (*RedisClient, error) {
 	// open a connection to the redis client
-	client := openConnectionRedis()
+	client := openConnectionRedis(BuildRedisClientOptions())
 
 	// ping the redis client to check the connection
 	if err := pingConnectionRedis(client); err != nil {

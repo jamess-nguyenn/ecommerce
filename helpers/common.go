@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"ecommerce/config"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -10,6 +11,15 @@ import (
 	"os"
 	"runtime"
 	"strings"
+)
+
+const (
+	FrameLevel0 = iota
+	FrameLevel1
+	FrameLevel2
+	FrameLevel3
+	FrameLevel4
+	FrameLevel5
 )
 
 func init() {
@@ -61,7 +71,7 @@ func GetServerAddress() string {
 	return address
 }
 
-func GetParams(r *http.Request) map[string]string {
+func GetPathParams(r *http.Request) map[string]string {
 	return mux.Vars(r)
 }
 
@@ -92,4 +102,23 @@ func GetModuleName() (string, error) {
 	}
 
 	return modFile.Module.Mod.Path, nil
+}
+
+func MarshalValue(v any) []byte {
+	jsonBytes, err := json.Marshal(v)
+	if err != nil {
+		LogError(fmt.Sprintf("Failed to marshal value: %v", err))
+		return nil
+	}
+
+	return jsonBytes
+}
+
+func UnmarshalValue(data []byte, v any) error {
+	if err := json.Unmarshal(data, v); err != nil {
+		LogError(fmt.Sprintf("Failed to unmarshal value: %v", err))
+		return err
+	}
+
+	return nil
 }

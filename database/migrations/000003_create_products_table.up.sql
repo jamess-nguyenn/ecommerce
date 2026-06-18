@@ -1,8 +1,0 @@
-CREATE TABLE products (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    channel_product_id VARCHAR(100) NOT NULL UNIQUE,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
-    deleted_at DATETIME NULL
-);

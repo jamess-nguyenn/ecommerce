@@ -7,8 +7,8 @@ import (
 
 func newProduct() *mysql.Product {
 	return &mysql.Product{
-		Name:             helpers.GenerateLetter(8),
-		ChannelProductId: helpers.GenerateString(14),
+		Name:                 helpers.GenerateLetter(8),
+		MarketplaceProductId: helpers.GenerateString(14),
 		CommonColumn: mysql.CommonColumn{
 			CreatedAt: helpers.GetTimeNow(),
 			UpdatedAt: helpers.GetTimeNow(),
