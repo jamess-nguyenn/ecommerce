@@ -22,29 +22,29 @@ func main() {
 		}
 	}()
 
-	// beginning seeding users
-	companyId := uint64(100000)
-	userNumber := 100
-	users := factories.SeedUser(userNumber, companyId)
-
-	userRepo := mysql.NewUserRepository(db)
-
-	if err := userRepo.CreateMany(users); err != nil {
-		fmt.Printf("Error seeding users: %+v\n", err)
-	} else {
-		fmt.Println("Seeded users successfully")
-	}
-
-	user1 := factories.DefinitionUser(companyId)
-	outputUser1, _ := userRepo.Create(user1)
-	userId1 := outputUser1.Id
-
-	user2 := factories.DefinitionUser(companyId)
-	outputUser2, _ := userRepo.Create(user2)
-	userId2 := outputUser2.Id
-
-	fmt.Println("User id:", userId1, "and", userId2)
-	// end seeding users
+	//// beginning seeding users
+	//companyId := uint64(100000)
+	//userNumber := 100
+	//users := factories.SeedUser(userNumber, companyId)
+	//
+	//userRepo := mysql.NewUserRepository(db)
+	//
+	//if err := userRepo.CreateMany(users); err != nil {
+	//	fmt.Printf("Error seeding users: %+v\n", err)
+	//} else {
+	//	fmt.Println("Seeded users successfully")
+	//}
+	//
+	//user1 := factories.DefinitionUser(companyId)
+	//outputUser1, _ := userRepo.Create(user1)
+	//userId1 := outputUser1.Id
+	//
+	//user2 := factories.DefinitionUser(companyId)
+	//outputUser2, _ := userRepo.Create(user2)
+	//userId2 := outputUser2.Id
+	//
+	//fmt.Println("User id:", userId1, "and", userId2)
+	//// end seeding users
 
 	// beginning seeding products
 	productNumber := 1000
@@ -60,11 +60,11 @@ func main() {
 
 	product1 := factories.DefinitionProduct()
 	outputProduct1, _ := productRepo.Create(product1)
-	productId1 := outputProduct1.Id
+	productId1 := outputProduct1.ID
 
 	product2 := factories.DefinitionProduct()
 	outputProduct2, _ := productRepo.Create(product2)
-	productId2 := outputProduct2.Id
+	productId2 := outputProduct2.ID
 
 	fmt.Println("Product id:", productId1, "and", productId2)
 	// end seeding products

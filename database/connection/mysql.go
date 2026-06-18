@@ -14,7 +14,7 @@ type MysqlDatabase struct {
 }
 
 func buildDsnMaster() string {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=UTC",
 		os.Getenv("DB_MYSQL_WRITE_USERNAME"),
 		os.Getenv("DB_MYSQL_WRITE_PASSWORD"),
 		os.Getenv("DB_MYSQL_WRITE_HOST"),
@@ -26,7 +26,7 @@ func buildDsnMaster() string {
 }
 
 func buildDsnSlave() string {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=UTC",
 		os.Getenv("DB_MYSQL_READ_USERNAME"),
 		os.Getenv("DB_MYSQL_READ_PASSWORD"),
 		os.Getenv("DB_MYSQL_READ_HOST"),

@@ -1,5 +1,6 @@
 services:
     golang:
+        platform: linux/amd64
         build:
             context: ./docker/golang
             dockerfile: Dockerfile
@@ -83,42 +84,6 @@ services:
         networks:
             - backend
 
-    zookeeper2:
-        image: confluentinc/cp-zookeeper:latest
-        container_name: zookeeper2
-        env_file:
-            - ./docker/zookeeper/.env.shared
-            - ./docker/zookeeper/.env.zookeeper2
-        volumes:
-            - ./docker/zookeeper/zookeeper2.cfg:/etc/zookeeper/conf/zoo.cfg
-            - zookeeper2-data:/var/lib/zookeeper/data
-            #- ./docker/container-data/zookeeper2:/var/lib/zookeeper/data # switch the comment to the above line to use the host filesystem
-            - ./docker/logs/zookeeper2:/var/lib/zookeeper/log
-        ports:
-            - "2182:2182"
-            - "2889:2888"
-            - "3889:3888"
-        networks:
-            - backend
-
-    zookeeper3:
-        image: confluentinc/cp-zookeeper:latest
-        container_name: zookeeper3
-        env_file:
-            - ./docker/zookeeper/.env.shared
-            - ./docker/zookeeper/.env.zookeeper3
-        volumes:
-            - ./docker/zookeeper/zookeeper3.cfg:/etc/zookeeper/conf/zoo.cfg
-            - zookeeper3-data:/var/lib/zookeeper/data
-            #- ./docker/container-data/zookeeper3:/var/lib/zookeeper/data # switch the comment to the above line to use the host filesystem
-            - ./docker/logs/zookeeper3:/var/lib/zookeeper/log
-        ports:
-            - "2183:2183"
-            - "2890:2888"
-            - "3890:3888"
-        networks:
-            - backend
-
     # Kafka Brokers
     kafka1:
         image: confluentinc/cp-kafka:latest
@@ -127,6 +92,7 @@ services:
             - ./docker/kafka/.env.shared
             - ./docker/kafka/.env.kafka1
         volumes:
+#            - ./docker/kafka/server1.properties:/etc/kafka/server.properties
             - kafka1-data:/var/lib/kafka
             #- ./docker/container-data/kafka1:/var/lib/kafka # switch the comment to the above line to use the host filesystem
             - ./docker/logs/kafka1:/var/log/kafka
@@ -134,8 +100,6 @@ services:
             - "9092:9092"
         depends_on:
             - zookeeper1
-            - zookeeper2
-            - zookeeper3
         networks:
             - backend
 
@@ -146,6 +110,7 @@ services:
             - ./docker/kafka/.env.shared
             - ./docker/kafka/.env.kafka2
         volumes:
+#            - ./docker/kafka/server2.properties:/etc/kafka/server.properties
             - kafka2-data:/var/lib/kafka
             #- ./docker/container-data/kafka2:/var/lib/kafka # switch the comment to the above line to use the host filesystem
             - ./docker/logs/kafka2:/var/log/kafka
@@ -153,8 +118,6 @@ services:
             - "9093:9093"
         depends_on:
             - zookeeper1
-            - zookeeper2
-            - zookeeper3
         networks:
             - backend
 
@@ -165,6 +128,7 @@ services:
             - ./docker/kafka/.env.shared
             - ./docker/kafka/.env.kafka3
         volumes:
+#            - ./docker/kafka/server3.properties:/etc/kafka/server.properties
             - kafka3-data:/var/lib/kafka
             #- ./docker/container-data/kafka3:/var/lib/kafka # switch the comment to the above line to use the host filesystem
             - ./docker/logs/kafka3:/var/log/kafka
@@ -172,8 +136,6 @@ services:
             - "9094:9094"
         depends_on:
             - zookeeper1
-            - zookeeper2
-            - zookeeper3
         networks:
             - backend
 
@@ -184,8 +146,6 @@ volumes:
     mysql-data:
     mongo-data:
     zookeeper1-data:
-    zookeeper2-data:
-    zookeeper3-data:
     kafka1-data:
     kafka2-data:
     kafka3-data:

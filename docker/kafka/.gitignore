@@ -4,4 +4,11 @@
 .env.kafka2
 .env.kafka3
 
+kafka1.properties
+kafka2.properties
+kafka3.properties
+server1.properties
+server2.properties
+server3.properties
+
 !.gitignore

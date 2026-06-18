@@ -1,7 +1,10 @@
 package helpers
 
 import (
+	"github.com/google/uuid"
 	"math/rand"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -29,4 +32,26 @@ func GenerateString(length int) string {
 
 func GenerateLetter(length int) string {
 	return generateStringWithCharset(length, letters)
+}
+
+func GenerateUUID() string {
+	return uuid.NewString()
+}
+
+func ToInt(s string) int {
+	number, _ := strconv.Atoi(s)
+	return number
+}
+
+func ToUint64(s string) uint64 {
+	number, _ := strconv.ParseUint(s, 10, 64)
+	return number
+}
+
+func IntToString(number int) string {
+	return strconv.Itoa(number)
+}
+
+func TrimSpace(s string) string {
+	return strings.TrimSpace(s)
 }

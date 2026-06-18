@@ -1,25 +1,26 @@
 package routes
 
 import (
+	"ecommerce/database/connection"
 	"ecommerce/http/handlers"
 	"ecommerce/http/middleware"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
-func BuildApiRouter() *mux.Router {
+func BuildApiRouter(db *connection.MysqlDatabase) *mux.Router {
 	router := mux.NewRouter()
 
-	api := router.PathPrefix("/api").Subrouter()
+	api := router.PathPrefix("/api/v1").Subrouter()
 
-	// user management
-	apiUser := api.PathPrefix("/users").Subrouter()
+	// storefront management
+	apiStorefront := api.PathPrefix("/storefronts").Subrouter()
 
-	apiUser.HandleFunc("", handlers.CreateUser).Methods(http.MethodPost).Name("CreateUser")
-	apiUser.HandleFunc("", handlers.GetListUser).Methods(http.MethodGet).Name("GetListUser")
-	apiUser.HandleFunc("/{id:[0-9]+}", handlers.ShowUser).Methods(http.MethodGet).Name("ShowUser")
-	apiUser.HandleFunc("/{id:[0-9]+}", handlers.UpdateUserById).Methods(http.MethodPut).Name("UpdateUserById")
-	apiUser.HandleFunc("/{id:[0-9]+}", handlers.DeleteUserById).Methods(http.MethodDelete).Name("DeleteUserById")
+	apiStorefront.HandleFunc("", handlers.CreateStorefront(db)).Methods(http.MethodPost).Name("CreateStorefront")
+	apiStorefront.HandleFunc("", handlers.GetListStorefront).Methods(http.MethodGet).Name("GetListStorefront")
+	apiStorefront.HandleFunc("/{id:[0-9]+}", handlers.ShowStorefront(db)).Methods(http.MethodGet).Name("ShowStorefront")
+	apiStorefront.HandleFunc("/{id:[0-9]+}", handlers.UpdateStorefrontById(db)).Methods(http.MethodPut).Name("UpdateStorefrontById")
+	apiStorefront.HandleFunc("/{id:[0-9]+}", handlers.DeleteStorefrontById).Methods(http.MethodDelete).Name("DeleteStorefrontById")
 
 	// product management
 	apiProduct := api.PathPrefix("/products").Subrouter()

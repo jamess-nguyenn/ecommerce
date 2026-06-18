@@ -1,0 +1,34 @@
+FROM golang:1.23
+
+# Install necessary tools
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    gcc \
+    make \
+    wget \
+    && apt-get clean
+
+# Clone and build librdkafka for ARM64
+RUN git clone https://github.com/edenhill/librdkafka.git && \
+    cd librdkafka && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf librdkafka
+
+# Install Delve debugger
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
+# Set working directory
+WORKDIR /var/www/go/ecommerce
+
+# Copy the wrapper script
+COPY ./golang-entrypoint.sh /golang-entrypoint.sh
+RUN chmod +x /golang-entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["/golang-entrypoint.sh"]

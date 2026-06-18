@@ -1,10 +1,27 @@
-FROM golang:1.23
+# syntax=docker/dockerfile:1.4
 
-# Install necessary tools
-RUN apt-get update && apt-get install -y \
+FROM --platform=linux/amd64 golang:1.25
+
+# Install necessary tools and dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     build-essential \
-    && apt-get clean
+    libssl-dev \
+    zlib1g-dev \
+    gcc \
+    make \
+    wget \
+    ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone and build librdkafka (compatible with amd64)
+RUN git clone https://github.com/edenhill/librdkafka.git /tmp/librdkafka && \
+    cd /tmp/librdkafka && \
+    ./configure --prefix=/usr && \
+    make -j$(nproc) && \
+    make install && \
+    cd / && rm -rf /tmp/librdkafka
 
 # Install Delve debugger
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
@@ -12,9 +29,9 @@ RUN go install github.com/go-delve/delve/cmd/dlv@latest
 # Set working directory
 WORKDIR /var/www/go/ecommerce
 
-# Copy the wrapper script
+# Copy entrypoint script
 COPY ./golang-entrypoint.sh /golang-entrypoint.sh
 RUN chmod +x /golang-entrypoint.sh
 
-# Set entrypoint
+# Entrypoint
 ENTRYPOINT ["/golang-entrypoint.sh"]

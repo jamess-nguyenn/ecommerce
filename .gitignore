@@ -25,5 +25,8 @@ go.work.sum
 
 # structure note
 tests/
+bkdocker-compose.yml
+new1-docker-compose.yml
+new2-docker-compose.yml
 note.txt
 structure.txt
